@@ -1,0 +1,35 @@
+<modification>
+	<name>Fizzpa Module</name>
+	<version>1.0.0</version>
+	<code>#OFM07</code>
+	<author>Fizzpa</author>
+	<link>https://fizzpa.net/</link>
+	<file path="system/library/template/twig.php">
+		<operation>
+			<search ><![CDATA[$file = DIR_TEMPLATE . $filename . '.twig';]]></search>
+			<add position="replace"><![CDATA[
+				$file = modification(DIR_TEMPLATE . $filename . '.twig');
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/sale/order.php">
+		<operation>
+			<search ><![CDATA[$data['invoice'] = $this->url->link('sale/order/invoice', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . (int)$this->request->get['order_id'], true);]]></search>
+			<add position="after"><![CDATA[
+				$data['fizzpa_sipment'] = $this->url->link('extension/shipping/fizzpa/fizzpa_create_shipment', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . (int)$this->request->get['order_id'], true);
+				$data['fizzpa_tracking'] = $this->url->link('extension/shipping/fizzpa/fizzpa_tracking', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . (int)$this->request->get['order_id'], true);
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/view/template/sale/order_info.twig">
+		<operation>
+			<search ><![CDATA[<ul class="breadcrumb">]]></search>
+			<add position="before"><![CDATA[
+				<div class="pull-right" style="margin-right:5px;">
+					<a href= {{ fizzpa_sipment }}   class="btn btn-info">Prepare Fizzpa Shipment</a>
+					<a href= {{ fizzpa_tracking }}   class="btn btn-info">Track Fizzpa Shipment</a>
+				</div>
+			]]></add>
+		</operation>
+	</file>
+</modification>
